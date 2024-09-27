@@ -5,15 +5,15 @@ from sys import exit
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.player_up = pygame.image.load("graphics/wizard_up.png").convert_alpha()
-        self.player_down = pygame.image.load("graphics/wizard_down.png").convert_alpha()
-        self.player_left = pygame.image.load("graphics/wizard_left.png").convert_alpha()
-        self.player_right = pygame.image.load("graphics/wizard_right.png").convert_alpha()
+        self.player_up = pygame.image.load("graphics/wizard/wizard_up.png").convert_alpha()
+        self.player_down = pygame.image.load("graphics/wizard/wizard_down.png").convert_alpha()
+        self.player_left = pygame.image.load("graphics/wizard/wizard_left.png").convert_alpha()
+        self.player_right = pygame.image.load("graphics/wizard/wizard_right.png").convert_alpha()
     
-        self.image = pygame.image.load("graphics/wizard.png").convert_alpha()
+        self.image = pygame.image.load("graphics/wizard/wizard_down.png").convert_alpha()
         self.rect = self.image.get_rect(midbottom = (400, 600))
     
-    def player_input(self):
+    def player_input_keyboard(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             self.rect.x -= movement_speed
@@ -69,7 +69,7 @@ class Player(pygame.sprite.Sprite):
 
         
     def update(self):
-        self.player_input()
+        self.player_input_keyboard()
         self.player_mouse_input()
 
 
