@@ -5,12 +5,12 @@ from sys import exit
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.player_up = pygame.image.load("graphics/player_up.png").convert_alpha()
-        self.player_down = pygame.image.load("graphics/player_down.png").convert_alpha()
-        self.player_left = pygame.image.load("graphics/player_left.png").convert_alpha()
-        self.player_right = pygame.image.load("graphics/player_right.png").convert_alpha()
+        self.player_up = pygame.image.load("graphics/wizard_up.png").convert_alpha()
+        self.player_down = pygame.image.load("graphics/wizard_down.png").convert_alpha()
+        self.player_left = pygame.image.load("graphics/wizard_left.png").convert_alpha()
+        self.player_right = pygame.image.load("graphics/wizard_right.png").convert_alpha()
     
-        self.image = pygame.image.load("graphics/player.png").convert_alpha()
+        self.image = pygame.image.load("graphics/wizard.png").convert_alpha()
         self.rect = self.image.get_rect(midbottom = (400, 600))
     
     def player_input(self):
@@ -27,9 +27,50 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_s]:
             self.rect.y += movement_speed
             self.image = self.player_down
+
+    def player_mouse_input(self):
+        mouse = pygame.mouse.get_pressed()
+        if mouse[0]:
+            mouse_pos = pygame.mouse.get_pos()
+            if self.rect.center[0] < mouse_pos[0] and self.rect.center[1] < mouse_pos[1]:
+                self.rect.x += movement_speed 
+                self.rect.y += movement_speed
+            if self.rect.center[0] > mouse_pos[0] and self.rect.center[1] > mouse_pos[1]:
+                self.rect.x -= movement_speed 
+                self.rect.y -= movement_speed
+            if self.rect.center[0] < mouse_pos[0] and self.rect.center[1] > mouse_pos[1]:
+                self.rect.x += movement_speed 
+                self.rect.y -= movement_speed
+            if self.rect.center[0] > mouse_pos[0] and self.rect.center[1] < mouse_pos[1]:
+                self.rect.x -= movement_speed 
+                self.rect.y += movement_speed
+
+            if self.rect.center[0] < mouse_pos[0] and self.rect.center[1] == mouse_pos[1]:
+                self.rect.x += movement_speed
+            if self.rect.center[0] > mouse_pos[0] and self.rect.center[1] == mouse_pos[1]:
+                self.rect.x -= movement_speed
+            if self.rect.center[0] == mouse_pos[0] and self.rect.center[1] < mouse_pos[1]:
+                self.rect.y += movement_speed    
+            if self.rect.center[0] == mouse_pos[0] and self.rect.center[1] > mouse_pos[1]:
+                self.rect.y -= movement_speed    
+
+            # mouse_x, mouse_y = mouse_pos
+            # if self.rect.x < mouse_x:
+            #     self.rect.x += movement_speed
+            # if self.rect.x > mouse_x:
+            #     self.rect.x -= movement_speed
+            # if self.rect.y < mouse_y:
+            #     self.rect.y += movement_speed
+            # if self.rect.y > mouse_y:
+            #     self.rect.y -= movement_speed
+
+            
+
+
         
     def update(self):
         self.player_input()
+        self.player_mouse_input()
 
 
 pygame.init()
