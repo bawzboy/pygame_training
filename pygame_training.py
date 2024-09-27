@@ -9,7 +9,11 @@ clock = pygame.time.Clock()
 
 # Player
 player_surf = pygame.image.load("graphics/player.png").convert_alpha()
-player_rect = player_surf.get_rect(midbottom = (400, 600))
+player_surf_up = pygame.image.load("graphics/player_up.png").convert_alpha()
+player_surf_down = pygame.image.load("graphics/player_down.png").convert_alpha()
+player_surf_left = pygame.image.load("graphics/player_left.png").convert_alpha()
+player_surf_right = pygame.image.load("graphics/player_right.png").convert_alpha()
+player_rect = player_surf_up.get_rect(midbottom = (400, 600))
 
 
 while True:
@@ -19,14 +23,18 @@ while True:
             exit()
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_a]:
             player_rect.x -= 10
-        if keys[pygame.K_RIGHT]:
+            player_surf = player_surf_left
+        if keys[pygame.K_d]:
             player_rect.x += 10
-        if keys[pygame.K_UP]:
+            player_surf = player_surf_right
+        if keys[pygame.K_w]:
             player_rect.y -= 10
-        if keys[pygame.K_DOWN]:
+            player_surf = player_surf_up
+        if keys[pygame.K_s]:
             player_rect.y += 10
+            player_surf = player_surf_down
     
 
     screen.fill("black")        
