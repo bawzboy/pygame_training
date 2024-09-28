@@ -11,20 +11,20 @@ class Player(pygame.sprite.Sprite):
         self.player_right = pygame.image.load("graphics/wizard/wizard_right.png").convert_alpha()
     
         self.image = pygame.image.load("graphics/wizard/wizard_down.png").convert_alpha()
-        self.rect = self.image.get_rect(midbottom = (400, 600))
+        self.rect = self.image.get_rect(center = (400, 600))
     
     def player_input_keyboard(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             self.rect.x -= movement_speed
             self.image = self.player_left
-        if keys[pygame.K_d]:
+        elif keys[pygame.K_d]:
             self.rect.x += movement_speed
             self.image = self.player_right
-        if keys[pygame.K_w]:
+        elif keys[pygame.K_w]:
             self.rect.y -= movement_speed
             self.image = self.player_up
-        if keys[pygame.K_s]:
+        elif keys[pygame.K_s]:
             self.rect.y += movement_speed
             self.image = self.player_down
 
@@ -32,71 +32,60 @@ class Player(pygame.sprite.Sprite):
         mouse = pygame.mouse.get_pressed()
         if mouse[0]:
             mouse_pos = pygame.mouse.get_pos()
-            # if difference x-x > y-y
-            
+
+            rect_x = self.rect.center[0]
+            rect_y = self.rect.center[1]
+            mouse_x = mouse_pos[0]
+            mouse_y = mouse_pos[1]
+
+            dif_x = abs(mouse_x - rect_x)
+            dif_y = abs(mouse_y - rect_y)
+
             # up left
-            if self.rect.center[0] > mouse_pos[0] and self.rect.center[1] > mouse_pos[1]:
+            if rect_x > mouse_x and rect_y > mouse_y:
                 self.rect.x -= movement_speed
-                self.image = self.player_left 
                 self.rect.y -= movement_speed
-                self.image = self.player_up
-            # down right
-            if self.rect.center[0] < mouse_pos[0] and self.rect.center[1] < mouse_pos[1]:
-                self.rect.x += movement_speed
-                self.image = self.player_right 
-                self.rect.y += movement_speed
-                self.image = self.player_down
-            # down left
-            if self.rect.center[0] > mouse_pos[0] and self.rect.center[1] < mouse_pos[1]:
-                self.rect.x -= movement_speed
-                self.image = self.player_left 
-                self.rect.y += movement_speed
-                self.image = self.player_down
+                if dif_x > dif_y:
+                    self.image = self.player_left 
+                elif dif_x < dif_y:
+                    self.image = self.player_up
+
             # up right
-            if self.rect.center[0] < mouse_pos[0] and self.rect.center[1] > mouse_pos[1]:
+            elif rect_x < mouse_x and rect_y > mouse_y:
                 self.rect.x += movement_speed
-                self.image = self.player_right 
                 self.rect.y -= movement_speed
-                self.image = self.player_up
+                if dif_x > dif_y:
+                    self.image = self.player_right
+                elif dif_x < dif_y:
+                    self.image = self.player_up     
 
-            # left
-            if self.rect.center[0] > mouse_pos[0] and self.rect.center[1] == mouse_pos[1]:
+            # down left
+            elif rect_x > mouse_x and rect_y < mouse_y:
                 self.rect.x -= movement_speed
-                self.image = self.player_left
-            # right
-            if self.rect.center[0] < mouse_pos[0] and self.rect.center[1] == mouse_pos[1]:
+                self.rect.y += movement_speed
+                if dif_x > dif_y:
+                    self.image = self.player_left 
+                elif dif_x < dif_y:
+                    self.image = self.player_down
+
+            # down right
+            elif rect_x < mouse_x and rect_y < mouse_y:
                 self.rect.x += movement_speed
-                self.image = self.player_right
-            # up
-            if self.rect.center[0] == mouse_pos[0] and self.rect.center[1] > mouse_pos[1]:
-                self.rect.y -= movement_speed
-                self.image = self.player_up    
-            # down
-            if self.rect.center[0] == mouse_pos[0] and self.rect.center[1] < mouse_pos[1]:
-                self.rect.y += movement_speed  
-                self.image = self.player_down  
-
-            # mouse_x, mouse_y = mouse_pos
-            # if self.rect.x < mouse_x:
-            #     self.rect.x += movement_speed
-            # if self.rect.x > mouse_x:
-            #     self.rect.x -= movement_speed
-            # if self.rect.y < mouse_y:
-            #     self.rect.y += movement_speed
-            # if self.rect.y > mouse_y:
-            #     self.rect.y -= movement_speed
-
-            
+                self.rect.y += movement_speed
+                if dif_x > dif_y:
+                    self.image = self.player_right 
+                elif dif_x < dif_y:
+                    self.image = self.player_down
 
 
-        
     def update(self):
         self.player_input_keyboard()
         self.player_mouse_input()
 
 
+
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
+screen = pygame.display.set_mode((1200, 800))
 pygame.display.set_caption("Game")
 clock = pygame.time.Clock()
 
