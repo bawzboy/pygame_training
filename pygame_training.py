@@ -1,6 +1,6 @@
 import pygame
+import random
 from sys import exit
-
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -49,7 +49,6 @@ class Player(pygame.sprite.Sprite):
                     self.image = self.player_left 
                 elif dif_x < dif_y:
                     self.image = self.player_up
-
             # up right
             elif rect_x < mouse_x and rect_y > mouse_y:
                 self.rect.x += movement_speed
@@ -58,7 +57,6 @@ class Player(pygame.sprite.Sprite):
                     self.image = self.player_right
                 elif dif_x < dif_y:
                     self.image = self.player_up     
-
             # down left
             elif rect_x > mouse_x and rect_y < mouse_y:
                 self.rect.x -= movement_speed
@@ -67,7 +65,6 @@ class Player(pygame.sprite.Sprite):
                     self.image = self.player_left 
                 elif dif_x < dif_y:
                     self.image = self.player_down
-
             # down right
             elif rect_x < mouse_x and rect_y < mouse_y:
                 self.rect.x += movement_speed
@@ -77,11 +74,22 @@ class Player(pygame.sprite.Sprite):
                 elif dif_x < dif_y:
                     self.image = self.player_down
 
-
     def update(self):
         self.player_input_keyboard()
         self.player_mouse_input()
 
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("graphics/enemy/enemy.png").convert_alpha()
+        self.rect = self.image.get_rect(center = (100,100))
+
+    def destroy(self):
+        if pygame.sprite.spritecollide(player.sprite, enemy, True):
+            self.kill()
+
+    def update(self):
+        self.destroy()
 
 
 pygame.init()
@@ -94,6 +102,9 @@ player = pygame.sprite.GroupSingle()
 player.add(Player())
 movement_speed = 5
 
+# Enemy
+enemy = pygame.sprite.Group()
+enemy.add(Enemy())
 
 while True:
     for event in pygame.event.get():
@@ -105,6 +116,9 @@ while True:
     
     player.draw(screen)
     player.update()
+
+    enemy.draw(screen)
+    enemy.update()
 
     pygame.display.update()
     clock.tick(60)
