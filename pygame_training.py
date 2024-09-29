@@ -133,8 +133,18 @@ class Projectile(pygame.sprite.Sprite):
         self.image = pygame.image.load("graphics/projectile/fireball_up.png").convert_alpha()
         self.rect = self.image.get_rect(center = player_pos)
 
-        self.direction = target_pos
         self.speed = 10
+        self.direction = target_pos
+
+        # self.direction = pygame.Vector2(target_pos) - pygame.Vector2(player_pos)
+        # if self.direction.length() != 0:
+        #     self.direction.normalize_ip()
+
+        # if abs(self.direction.x) > abs(self.direction.y):
+        #     self.image = self.fireball_right if self.direction.x > 0 else self.fireball_left
+        # else:
+        #     self.image = self.fireball_down if self.direction.y > 0 else self.fireball_up
+
 
     def fly(self, target_pos):
         rect_x = self.rect.center[0]
@@ -186,6 +196,8 @@ class Projectile(pygame.sprite.Sprite):
     def update(self, enemy_group):
         self.destroy(enemy_group)
         self.fly(self.direction)
+        # self.rect.x += self.direction.x * self.speed
+        # self.rect.y += self.direction.y * self.speed
 
 
 
