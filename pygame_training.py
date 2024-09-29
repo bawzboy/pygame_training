@@ -188,6 +188,9 @@ class Projectile(pygame.sprite.Sprite):
             elif dif_x < dif_y:
                 self.image = self.fireball_down
 
+        # if self.rect == target_pos:
+        #     self.kill()
+
 
     def destroy(self, enemy_group):
         if pygame.sprite.spritecollide(self, enemy_group, True):
