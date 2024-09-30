@@ -20,6 +20,11 @@ class Player(pygame.sprite.Sprite):
     
     def player_input_keyboard(self):
         # move_ip(x,y)
+
+        # self.direction = pygame.math.Vector2()
+        # if keys[pygame.K_UP]:
+        #   self.direction.y = -1
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             self.rect.x -= self.movement_speed
