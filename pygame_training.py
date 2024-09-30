@@ -19,6 +19,7 @@ class Player(pygame.sprite.Sprite):
         return self.rect.centerx, self.rect.centery
     
     def player_input_keyboard(self):
+        # move_ip(x,y)
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
             self.rect.x -= self.movement_speed
@@ -133,6 +134,8 @@ class Projectile(pygame.sprite.Sprite):
         self.image = pygame.image.load("graphics/projectile/fireball_up.png").convert_alpha()
         self.rect = self.image.get_rect(center = player_pos)
 
+        self.spawn_time = pygame.time.get_ticks()
+        self.life_time = 2000
         self.speed = 10
         self.direction = target_pos
 
@@ -188,9 +191,6 @@ class Projectile(pygame.sprite.Sprite):
             elif dif_x < dif_y:
                 self.image = self.fireball_down
 
-        # if self.rect == target_pos:
-        #     self.kill()
-
 
     def destroy(self, enemy_group):
         if pygame.sprite.spritecollide(self, enemy_group, True):
@@ -199,6 +199,8 @@ class Projectile(pygame.sprite.Sprite):
     def update(self, enemy_group):
         self.destroy(enemy_group)
         self.fly(self.direction)
+        if pygame.time.get_ticks() - self.spawn_time > self.life_time:
+            self.kill()
         # self.rect.x += self.direction.x * self.speed
         # self.rect.y += self.direction.y * self.speed
 
