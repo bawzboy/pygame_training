@@ -13,19 +13,36 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("graphics/wizard/wizard_down.png").convert_alpha()
         self.rect = self.image.get_rect(center = (400, 600))
 
+        # self.direction = pygame.math.Vector2()
         self.movement_speed = 5
 
     def get_pos(self):
         return self.rect.centerx, self.rect.centery
     
-    def player_input_keyboard(self):
         # move_ip(x,y)
-
-        # self.direction = pygame.math.Vector2()
-        # if keys[pygame.K_UP]:
-        #   self.direction.y = -1
-
+    def player_input_keyboard(self):
+        
         keys = pygame.key.get_pressed()
+
+        # if keys[pygame.K_w]:
+        #     self.direction.y = -self.movement_speed
+        # elif keys[pygame.K_s]:
+        #     self.direction.y = self.movement_speed
+        # else:
+        #     self.direction.y = 0
+        
+        # if keys[pygame.K_a]:
+        #     self.direction.x = -self.movement_speed
+        # elif keys[pygame.K_d]:
+        #     self.direction.x = self.movement_speed
+        # else:
+        #     self.direction.x = 0
+        
+        # if self.direction.x != 0 and self.direction.y != 0:
+        #     self.direction = self.direction.normalize()
+
+        # self.rect.move_ip(self.direction.x, self.direction.y)
+
         if keys[pygame.K_a]:
             self.rect.x -= self.movement_speed
             self.image = self.player_left
@@ -40,7 +57,7 @@ class Player(pygame.sprite.Sprite):
             self.image = self.player_down
 
 
-    # Chat-Bro version with vector math
+    # Chat-Bro version with vector
     # def player_mouse_input(self): 
     #         mouse = pygame.mouse.get_pressed()
     #         if mouse[0]:
@@ -144,17 +161,17 @@ class Projectile(pygame.sprite.Sprite):
         self.speed = 10
         self.direction = target_pos
 
-        # self.direction = pygame.Vector2(target_pos) - pygame.Vector2(player_pos)
-        # if self.direction.length() != 0:
-        #     self.direction.normalize_ip()
+        self.direction = pygame.Vector2(target_pos) - pygame.Vector2(player_pos)
+        if self.direction.length() != 0:
+            self.direction.normalize_ip()
 
-        # if abs(self.direction.x) > abs(self.direction.y):
-        #     self.image = self.fireball_right if self.direction.x > 0 else self.fireball_left
-        # else:
-        #     self.image = self.fireball_down if self.direction.y > 0 else self.fireball_up
+        if abs(self.direction.x) > abs(self.direction.y):
+            self.image = self.fireball_right if self.direction.x > 0 else self.fireball_left
+        else:
+            self.image = self.fireball_down if self.direction.y > 0 else self.fireball_up
 
 
-    def fly(self, target_pos):
+    # def fly(self, target_pos):
         rect_x = self.rect.center[0]
         rect_y = self.rect.center[1]
         target_x = target_pos[0]
@@ -203,11 +220,11 @@ class Projectile(pygame.sprite.Sprite):
 
     def update(self, enemy_group):
         self.destroy(enemy_group)
-        self.fly(self.direction)
+        # self.fly(self.direction)
         if pygame.time.get_ticks() - self.spawn_time > self.life_time:
             self.kill()
-        # self.rect.x += self.direction.x * self.speed
-        # self.rect.y += self.direction.y * self.speed
+        self.rect.x += self.direction.x * self.speed
+        self.rect.y += self.direction.y * self.speed
 
 
 
