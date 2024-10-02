@@ -111,3 +111,13 @@
 
         # self.rect.x += self.direction.x * self.speed
         # self.rect.y += self.direction.y * self.speed
+
+        # self.direction = pygame.Vector2(target_pos) - pygame.Vector2(player_pos)
+        # if self.direction.length() != 0:
+        #     self.direction.normalize_ip()
+
+        # if abs(self.direction.x) > abs(self.direction.y):
+        #     self.image = self.fireball_right if self.direction.x > 0 else self.fireball_left
+        # else:
+        #     self.image = self.fireball_down if self.direction.y > 0 else self.fireball_up
+

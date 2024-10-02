@@ -13,7 +13,7 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("graphics/wizard/wizard_down.png").convert_alpha()
         self.rect = self.image.get_rect(center = (400, 600))
 
-        # self.direction = pygame.math.Vector2()
+        self.direction = pygame.math.Vector2()
         self.movement_speed = 5
 
     def get_pos(self):
@@ -23,43 +23,36 @@ class Player(pygame.sprite.Sprite):
         
         keys = pygame.key.get_pressed()
 
-        # if keys[pygame.K_w]:
-        #     self.direction.y = -self.movement_speed
-        # elif keys[pygame.K_s]:
-        #     self.direction.y = self.movement_speed
-        # else:
-        #     self.direction.y = 0
-        
-        # if keys[pygame.K_a]:
-        #     self.direction.x = -self.movement_speed
-        # elif keys[pygame.K_d]:
-        #     self.direction.x = self.movement_speed
-        # else:
-        #     self.direction.x = 0
-        
-        # if self.direction.x != 0 and self.direction.y != 0:
-        #     self.direction = self.direction.normalize()
-
-        # self.rect.move_ip(self.direction.x, self.direction.y)
-
-        if keys[pygame.K_a]:
-            self.rect.x -= self.movement_speed
-            self.image = self.player_left
-        elif keys[pygame.K_d]:
-            self.rect.x += self.movement_speed
-            self.image = self.player_right
-        elif keys[pygame.K_w]:
-            self.rect.y -= self.movement_speed
+        if keys[pygame.K_w]:
+            self.direction.y = -1
             self.image = self.player_up
         elif keys[pygame.K_s]:
-            self.rect.y += self.movement_speed
+            self.direction.y = 1
             self.image = self.player_down
+        else:
+            self.direction.y = 0
+        
+        if keys[pygame.K_a]:
+            self.direction.x = -1
+            self.image = self.player_left
+        elif keys[pygame.K_d]:
+            self.direction.x = 1
+            self.image = self.player_right
+        else:
+            self.direction.x = 0
+        
+        if self.direction.x != 0 and self.direction.y != 0:
+            self.direction = self.direction.normalize()
 
+        self.rect.move_ip(self.direction.x, self.direction.y)
 
+    def move(self, speed):
+        self.rect.center += self.direction * speed
     
 
     def update(self):
         self.player_input_keyboard()
+        self.move(self.movement_speed)
         # self.player_mouse_input()
         self.get_pos()
 
@@ -91,20 +84,6 @@ class Projectile(pygame.sprite.Sprite):
         self.spawn_time = pygame.time.get_ticks()
         self.life_time = 2000
         self.speed = 10
-        self.direction = target_pos
-
-        self.direction = pygame.Vector2(target_pos) - pygame.Vector2(player_pos)
-        if self.direction.length() != 0:
-            self.direction.normalize_ip()
-
-        if abs(self.direction.x) > abs(self.direction.y):
-            self.image = self.fireball_right if self.direction.x > 0 else self.fireball_left
-        else:
-            self.image = self.fireball_down if self.direction.y > 0 else self.fireball_up
-
-
-
-
 
     def destroy(self, enemy_group):
         if pygame.sprite.spritecollide(self, enemy_group, True):
