@@ -14,24 +14,18 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (400, 600))
 
         self.direction = pygame.math.Vector2()
-        self.movement_speed = 5
+        self.speed = 5
 
     def get_pos(self):
         return self.rect.centerx, self.rect.centery
+    
+    def get_orientation(self):
+        return self.direction
     
     def player_input_keyboard(self):
         
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_w]:
-            self.direction.y = -1
-            self.image = self.player_up
-        elif keys[pygame.K_s]:
-            self.direction.y = 1
-            self.image = self.player_down
-        else:
-            self.direction.y = 0
-        
         if keys[pygame.K_a]:
             self.direction.x = -1
             self.image = self.player_left
@@ -41,6 +35,15 @@ class Player(pygame.sprite.Sprite):
         else:
             self.direction.x = 0
         
+        if keys[pygame.K_w]:
+            self.direction.y = -1
+            self.image = self.player_up
+        elif keys[pygame.K_s]:
+            self.direction.y = 1
+            self.image = self.player_down
+        else:
+            self.direction.y = 0
+                
         if self.direction.x != 0 and self.direction.y != 0:
             self.direction = self.direction.normalize()
 
@@ -52,9 +55,10 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         self.player_input_keyboard()
-        self.move(self.movement_speed)
+        self.move(self.speed)
         # self.player_mouse_input()
         self.get_pos()
+        self.get_orientation()
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -71,7 +75,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self, player_pos, target_pos):
+    def __init__(self, player_pos, target_pos, player_orientation):
         super().__init__()
         self.fireball_up = pygame.image.load("graphics/projectile/fireball_up.png").convert_alpha()
         self.fireball_down = pygame.image.load("graphics/projectile/fireball_down.png").convert_alpha()
@@ -80,6 +84,7 @@ class Projectile(pygame.sprite.Sprite):
         
         self.image = pygame.image.load("graphics/projectile/fireball_up.png").convert_alpha()
         self.rect = self.image.get_rect(center = player_pos)
+        self.orientation = player_orientation
 
         self.spawn_time = pygame.time.get_ticks()
         self.life_time = 2000
@@ -89,8 +94,19 @@ class Projectile(pygame.sprite.Sprite):
         if pygame.sprite.spritecollide(self, enemy_group, True):
             self.kill()
 
+    def set_orientation(self):
+        if self.orientation == (-1,0):
+            self.image = self.fireball_left
+        elif self.orientation == (1,0):
+            self.image = self.fireball_right
+        elif self.orientation == (0,-1):
+            self.image = self.fireball_up
+        elif self.orientation == (0,1):
+            self.image = self.fireball_down
+
     def update(self, enemy_group):
         self.destroy(enemy_group)
+        self.set_orientation()
         # self.fly(self.direction)
         if pygame.time.get_ticks() - self.spawn_time > self.life_time:
             self.kill()
@@ -122,7 +138,7 @@ while True:
     mouse = pygame.mouse.get_pressed()
     if mouse[0]:
         mouse_pos = pygame.mouse.get_pos()
-        projectile = Projectile(player.sprite.get_pos(), mouse_pos)
+        projectile = Projectile(player.sprite.get_pos(), mouse_pos, player.sprite.get_orientation())
         projectile_group.add(projectile)
         
 
