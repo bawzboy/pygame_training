@@ -20,25 +20,32 @@ class Player(pygame.sprite.Sprite):
         return self.rect.centerx, self.rect.centery
     
     def get_orientation(self):
-        return self.direction
+        if self.image == self.player_left:
+            return "left"
+        elif self.image == self.player_right:
+            return "right"
+        elif self.image == self.player_up:
+            return "up"
+        elif self.image == self.player_down:
+            return "down"
     
     def player_input_keyboard(self):
         
         keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_a]:
+        if keys[pygame.K_LEFT]:
             self.direction.x = -1
             self.image = self.player_left
-        elif keys[pygame.K_d]:
+        elif keys[pygame.K_RIGHT]:
             self.direction.x = 1
             self.image = self.player_right
         else:
             self.direction.x = 0
         
-        if keys[pygame.K_w]:
+        if keys[pygame.K_UP]:
             self.direction.y = -1
             self.image = self.player_up
-        elif keys[pygame.K_s]:
+        elif keys[pygame.K_DOWN]:
             self.direction.y = 1
             self.image = self.player_down
         else:
@@ -75,7 +82,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class Projectile(pygame.sprite.Sprite):
-    def __init__(self, player_pos, target_pos, player_orientation):
+    def __init__(self, player_pos, player_orientation):
         super().__init__()
         self.fireball_up = pygame.image.load("graphics/projectile/fireball_up.png").convert_alpha()
         self.fireball_down = pygame.image.load("graphics/projectile/fireball_down.png").convert_alpha()
@@ -95,13 +102,13 @@ class Projectile(pygame.sprite.Sprite):
             self.kill()
 
     def set_orientation(self):
-        if self.orientation == (-1,0):
+        if self.orientation == "left":
             self.image = self.fireball_left
-        elif self.orientation == (1,0):
+        elif self.orientation == "right":
             self.image = self.fireball_right
-        elif self.orientation == (0,-1):
+        elif self.orientation == "up":
             self.image = self.fireball_up
-        elif self.orientation == (0,1):
+        elif self.orientation == "down":
             self.image = self.fireball_down
 
     def update(self, enemy_group):
@@ -135,11 +142,15 @@ while True:
             pygame.quit()
             exit()
 
-    mouse = pygame.mouse.get_pressed()
-    if mouse[0]:
-        mouse_pos = pygame.mouse.get_pos()
-        projectile = Projectile(player.sprite.get_pos(), mouse_pos, player.sprite.get_orientation())
-        projectile_group.add(projectile)
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:
+                projectile = Projectile(player.sprite.get_pos(), player.sprite.get_orientation())
+                projectile_group.add(projectile)
+
+
+    # mouse = pygame.mouse.get_pressed()
+    # if mouse[0]:
+    #     mouse_pos = pygame.mouse.get_pos()
         
 
     screen.fill("black")        
